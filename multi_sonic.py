@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import sys
 # trigger_pin = 23
 # echo_pin = 24
 
@@ -29,8 +30,9 @@ def get_distance(trigger_pin, echo_pin):
 	distance_in = distance_cm/2.5
 	return(distance_cm,distance_in)
 while True:
-        set_mode(7,8)
-	print("7 8 cm=%f\tinches=%f" % get_distance(7,8))
-        set_mode(23, 24)
-        print("23 24 cm=%f\tinches=%f" % get_distance(23,24))
+	#set_mode(7,8)
+	#print("7 8 cm=%f\tinches=%f" % get_distance(7,8), end='\r')
+	set_mode(23, 24)
+	print("23 24 cm=%f\tinches=%f" % get_distance(23,24), end='\r')
 	time.sleep(1)
+	sys.stdout.flush()
