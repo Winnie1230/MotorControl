@@ -94,9 +94,7 @@ int main(){
 
 	while(1){
 		pwmWrite(MOTOR1_PIN1, PWM1);
-		//printf("motor_1\n");
 		pwmWrite(MOTOR2_PIN1, PWM2);
-		//printf("motor_2\n");
 		//usleep(3000);
 		//printf("start\n");
 		//speed1 = car_speed(1);
