@@ -9,8 +9,8 @@
 
 #define ENCODER_PIN1 7 //pin7
 #define ENCODER_PIN2 0 //pin11
-#define MOTOR1_PIN1 1 //pin12
-#define MOTOR1_PIN2 3//pin15 gpio control 
+#define MOTOR1_PIN1 23 //pin12
+#define MOTOR1_PIN2 2//pin15 gpio control 
 #define MOTOR2_PIN1 23 //pin33
 #define MOTOR2_PIN2 2//pin13 gpio control
 
@@ -68,11 +68,11 @@ int main(){
 	init();
 	double vcmd1, vcmd2;
 	pinMode(ENCODER_PIN1, INPUT);
-	pinMode(ENCODER_PIN2, INPUT);
+	//pinMode(ENCODER_PIN2, INPUT);
 	pinMode(MOTOR1_PIN1, PWM_OUTPUT);
-	pinMode(MOTOR2_PIN1, PWM_OUTPUT);
+	//pinMode(MOTOR2_PIN1, PWM_OUTPUT);
 	pinMode(MOTOR1_PIN2, OUTPUT);
-	pinMode(MOTOR2_PIN2, OUTPUT);
+	//pinMode(MOTOR2_PIN2, OUTPUT);
 	
 	signal(SIGINT, sighandler);
 
@@ -80,13 +80,13 @@ int main(){
 	//scanf("%lf %lf", &vcmd1, &vcmd2);
 
 	digitalWrite(MOTOR1_PIN2 , LOW);
-	digitalWrite(MOTOR2_PIN2 , HIGH);
+	//digitalWrite(MOTOR2_PIN2 , HIGH);
 	
 	//pwmWrite(MOTOR1_PIN1 , 600);
 
 	//pwmWrite(MOTOR2_PIN1 , 600);
 	pwmWrite(MOTOR1_PIN1, 60);
-	pwmWrite(MOTOR2_PIN1, 60);
+	//pwmWrite(MOTOR2_PIN1, 60);
 	delay(500);
 
 
@@ -103,20 +103,20 @@ int main(){
 		pwmWrite(MOTOR1_PIN1, PWM1);
 		//printf("motor_1\n");
 		//usleep(1000);
-		pwmWrite(MOTOR2_PIN1, PWM2);
+		//pwmWrite(MOTOR2_PIN1, PWM2);
 		//printf("motor_2\n");
 		//usleep(3000);
 		//printf("start\n");
 		speed1 = car_speed(1);
 		//printf("speed1\n");
 		//delay(5);
-		speed2 = car_speed(2);
+		//speed2 = car_speed(2);
 		//printf("speed2\n");
 		//delay(5);
 		//printf("%lf %lf\n", speed1 , speed2);
 		//printf("current_speed2 = %lf\n", speed2);
 		PWM1 = pi_control(1 , 2, speed1);
-		PWM2 = pi_control(2 , 2, speed2);
+		//PWM2 = pi_control(2 , 2, speed2);
 		printf("%lf %d %lf %d\n", speed1 , PWM1, speed2 , PWM2);
 		//printf("PWM2 = %d\n", PWM2);
 	}
