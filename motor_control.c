@@ -15,7 +15,7 @@
 #define MOTOR2_PIN2 2//pin13 gpio control
 
 int reso;
-double rad;
+double rad2;
 double sample_time;
 
 //car_speed
