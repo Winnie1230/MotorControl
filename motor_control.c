@@ -91,15 +91,15 @@ int main(){
 
 
 
-	/*while(1){
-		pwmWrite(MOTOR1_PIN1, 800);
+	while(1){
+		pwmWrite(MOTOR1_PIN1, 900);
 		//digitalWrite(MOTOR1_PIN2, HIGH);
 		pwmWrite(MOTOR2_PIN1, 900);
 		//digitalWrite(MOTOR2_PIN2 , LOW);
-	}*/
+	}
 
 	//while(1) ;
-	while(1){
+	/*while(1){
 		pwmWrite(MOTOR1_PIN1, PWM1);
 		//printf("motor_1\n");
 		//usleep(1000);
@@ -119,7 +119,7 @@ int main(){
 		PWM2 = pi_control(2 , 2, speed2);
 		printf("%lf %d %lf %d\n", speed1 , PWM1, speed2 , PWM2);
 		//printf("PWM2 = %d\n", PWM2);
-	}
+	}*/
 	return 0;
 }
 
