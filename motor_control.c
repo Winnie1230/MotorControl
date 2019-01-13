@@ -83,7 +83,7 @@ int main(){
 
 	//printf("Enter vcmd1 vcmd2:");
 	//scanf("%lf %lf", &vcmd1, &vcmd2);
-	printf("start\n");	
+	//printf("start\n");	
 
 	//pwmWrite(MOTOR1_PIN1 , 600);
 
