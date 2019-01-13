@@ -46,9 +46,9 @@ void init(){
 	check_num = 3;
 
 	//PI control
-	PWM1 = 500;		PWM2 = 1000;
-	KP_1 = 300;		KP_2 = 0;
-	KI_1 = 0;	KI_2 = 0;
+	PWM1 = 600;		PWM2 = 500;
+	KP_1 = 400;		KP_2 = 250;
+	KI_1 = 0;		KI_2 = 0;
 	G_1 = 0;		G_2 = 0;
 	in_1 = 0; 		in_2 = 0;
 
@@ -77,13 +77,13 @@ int main(){
 	pinMode(MOTOR1_PIN2, OUTPUT);
 	pinMode(MOTOR2_PIN2, OUTPUT);
 	
-	digitalWrite(MOTOR1_PIN2 , LOW);
-	digitalWrite(MOTOR2_PIN2 , HIGH);
+	digitalWrite(MOTOR1_PIN2 , HIGH);
+	digitalWrite(MOTOR2_PIN2 , LOW);
 
 	signal(SIGINT, sighandler);
 
-	//printf("Enter vcmd1 vcmd2:");
-	//scanf("%lf %lf", &vcmd1, &vcmd2);
+	printf("Enter vcmd1 vcmd2:");
+	scanf("%lf %lf", &vcmd1, &vcmd2);
 	//printf("start\n");	
 
 	//pwmWrite(MOTOR1_PIN1 , 600);
@@ -94,15 +94,17 @@ int main(){
 	delay(500);*/
 
 	while(1){
-		pwmWrite(MOTOR1_PIN1, PWM1);
+		//pwmWrite(MOTOR1_PIN1, PWM1);
 		//delay(100);
 		pwmWrite(MOTOR2_PIN1, PWM2);
+		delay(500);
 
 		//speed1 = car_speed(PWM1 , 1);
 		//PWM1 = pi_control(1 , vcmd1 , speed1);
-		//printf("%lf %d\n", speed1 , PWM1);
-		//speed2 = car_speed(2);
-		//pi_control(2 , vcmd2 , speed2);
+		//printf("%lf %lf\n", speed1 , duration);
+		speed2 = car_speed(PWM2 , 2);
+		PWM2 = pi_control(2 , vcmd2 , speed2);
+		printf("%lf %d\n" , speed2 , PWM2);
 		//printf("%lf   %lf\n", speed1 , speed2);
 		//printf("current_speed2 = %lf\n", speed2);
 		//PWM1 = pi_control(1 , 2, speed1);
@@ -119,6 +121,8 @@ void encoder(int pin){
 		encoder_current = digitalRead(ENCODER_PIN1);
 	else 
 		encoder_current = digitalRead(ENCODER_PIN2);
+
+	printf("%d\n" , encoder_current);
 
 	//printf("encoder_current = %d\n", encoder_current);
 	/*if(encoder_current != encoder_pre){
@@ -183,12 +187,12 @@ void encoder(int pin){
 }
 
 double car_speed(int PWM , int pin){
-	while(1){
-		if(PWM < 50)
+	while(1){:
+		if(PWM < 420)
 			return 0;
 		encoder(pin);
 		usleep(sample_time);
-		if(encoder_end == 1 && encoder_check == 0)
+		if(encoder_end == 1)
 			break;
 	}
 
@@ -232,8 +236,8 @@ int pi_control(int num , double vcmd, double speed){
 		in = -1023;
 
 	PWM = G + in;
-	if(abs(PWM) >= 1023)
-		PWM = 1023;
+	if(abs(PWM) >= 950)
+		PWM = 950;
 	else 
 		PWM = abs(PWM);
 	//else if(abs(PWM < 100))
