@@ -95,14 +95,12 @@ int main(){
 	while(1){
 		pwmWrite(MOTOR1_PIN1, PWM1);
 		pwmWrite(MOTOR2_PIN1, PWM2);
-		//usleep(3000);
 		//printf("start\n");
 		//speed1 = car_speed(1);
 		//printf("speed1\n");
 		//delay(5);
 		//speed2 = car_speed(2);
 		//printf("speed2\n");
-		//delay(5);
 		//printf("%lf   %lf\n", speed1 , speed2);
 		//printf("current_speed2 = %lf\n", speed2);
 		//PWM1 = pi_control(1 , 2, speed1);
