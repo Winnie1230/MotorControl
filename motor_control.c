@@ -14,9 +14,8 @@
 #define MOTOR2_PIN1 23 //pin33
 #define MOTOR2_PIN2 2//pin13 gpio control
 
-int reso;
+int reso , sample_time;
 double rad;
-double sample_time;
 
 //car_speed
 double speed1, speed2;
@@ -27,6 +26,7 @@ int encoder_pre;
 int encoder_end;
 int encoder_check;
 int diff;
+int check_num;
 struct timeval start, finish;
 
 //PI control
@@ -43,11 +43,12 @@ void init(){
 	encoder_end = 0; //end flag
 	encoder_check = 0;
 	diff = -1;
+	check_num = 3;
 
 	//PI control
-	PWM1 = 800;		PWM2 = 800;
-	KP_1 = 300;		KP_2 = 500;
-	KI_1 = 1000;		KI_2 = 1000;
+	PWM1 = 500;		PWM2 = 1000;
+	KP_1 = 300;		KP_2 = 0;
+	KI_1 = 0;	KI_2 = 0;
 	G_1 = 0;		G_2 = 0;
 	in_1 = 0; 		in_2 = 0;
 
@@ -58,7 +59,7 @@ void init(){
 }
 
 void encoder(int);
-double car_speed(int);
+double car_speed(int , int);
 int pi_control(int , double , double);
 void sighandler(int);
 
@@ -94,13 +95,14 @@ int main(){
 
 	while(1){
 		pwmWrite(MOTOR1_PIN1, PWM1);
+		//delay(100);
 		pwmWrite(MOTOR2_PIN1, PWM2);
-		//printf("start\n");
-		//speed1 = car_speed(1);
-		//printf("speed1\n");
-		//delay(5);
+
+		//speed1 = car_speed(PWM1 , 1);
+		//PWM1 = pi_control(1 , vcmd1 , speed1);
+		//printf("%lf %d\n", speed1 , PWM1);
 		//speed2 = car_speed(2);
-		//printf("speed2\n");
+		//pi_control(2 , vcmd2 , speed2);
 		//printf("%lf   %lf\n", speed1 , speed2);
 		//printf("current_speed2 = %lf\n", speed2);
 		//PWM1 = pi_control(1 , 2, speed1);
@@ -117,6 +119,7 @@ void encoder(int pin){
 		encoder_current = digitalRead(ENCODER_PIN1);
 	else 
 		encoder_current = digitalRead(ENCODER_PIN2);
+
 	//printf("encoder_current = %d\n", encoder_current);
 	/*if(encoder_current != encoder_pre){
 		if(encoder_check == 0){//not start to count
@@ -156,13 +159,13 @@ void encoder(int pin){
 	if(encoder_current != encoder_pre){
 		if(diff == -1)
 			diff = 0;
-		else if((diff >= 0 && diff < 4) && encoder_check == 1) //noise
+		else if((diff >= 0 && diff < check_num) && encoder_check == 1) //noise
 			diff = -1;
 	}
 	else if(encoder_current == encoder_pre){
-		if(diff >= 0 && diff < 4)
+		if(diff >= 0 && diff < check_num)
 			diff ++;
-		if(diff >= 4){
+		if(diff >= check_num){
 			if(encoder_check == 0){
 				encoder_check = 1; //start to count
 				gettimeofday(&start , NULL);
@@ -179,16 +182,19 @@ void encoder(int pin){
 	encoder_pre = encoder_current;
 }
 
-double car_speed(int pin){
+double car_speed(int PWM , int pin){
 	while(1){
+		if(PWM < 50)
+			return 0;
 		encoder(pin);
 		usleep(sample_time);
-		if(encoder_end = 1 && encoder_check == 0)
+		if(encoder_end == 1 && encoder_check == 0)
 			break;
 	}
 
 	duration = (finish.tv_sec - start.tv_sec) + (finish.tv_usec - start.tv_usec) * 0.000001;
 
+	//printf("duration = %lf\n" , duration);
 	double speed = rad * 0.0675 / duration;
 	encoder_end = 0;
 	return speed;
