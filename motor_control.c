@@ -45,9 +45,9 @@ void init(){
 	diff = -1;
 
 	//PI control
-	PWM1 = 500;		PWM2 = 500;
+	PWM1 = 800;		PWM2 = 800;
 	KP_1 = 300;		KP_2 = 500;
-	KI_1 = 0;		KI_2 = 0;
+	KI_1 = 1000;		KI_2 = 1000;
 	G_1 = 0;		G_2 = 0;
 	in_1 = 0; 		in_2 = 0;
 
