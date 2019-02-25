@@ -20,13 +20,15 @@ double rad;
 //car_speed
 double speed1, speed2;
 double duration;
+struct timeval check;
 
 //encoder
 int encoder_pre;
 int encoder_end;
 int encoder_check;
 int diff;
-int check_num;
+int check_num; //read three 1 or 0 then start/end counting
+int checktime; //encoder maximum time
 struct timeval start, finish;
 
 //PI control
@@ -44,9 +46,10 @@ void init(){
 	encoder_check = 0;
 	diff = -1;
 	check_num = 3;
+	checktime = 5; //5s
 
 	//PI control
-	PWM1 = 600;		PWM2 = 500;
+	PWM1 = 0;		PWM2 = 500;
 	KP_1 = 400;		KP_2 = 250;
 	KI_1 = 0;		KI_2 = 0;
 	G_1 = 0;		G_2 = 0;
@@ -70,41 +73,45 @@ int main(){
 
 	init();
 	double vcmd1, vcmd2;
-	pinMode(ENCODER_PIN1, INPUT);
-	pinMode(ENCODER_PIN2, INPUT);
-	pinMode(MOTOR1_PIN1, PWM_OUTPUT);
-	pinMode(MOTOR2_PIN1, PWM_OUTPUT);
-	pinMode(MOTOR1_PIN2, OUTPUT);
-	pinMode(MOTOR2_PIN2, OUTPUT);
+	//pinMode(ENCODER_PIN1, INPUT);
+	//pinMode(ENCODER_PIN2, INPUT);
+	//pinMode(MOTOR1_PIN1, PWM_OUTPUT);
+	//pinMode(MOTOR2_PIN1, PWM_OUTPUT);
+	//pinMode(MOTOR1_PIN2, OUTPUT);
+	//pinMode(MOTOR2_PIN2, OUTPUT);
 	
-	digitalWrite(MOTOR1_PIN2 , HIGH);
-	digitalWrite(MOTOR2_PIN2 , LOW);
+	//digitalWrite(MOTOR1_PIN2 , LOW);
+	//digitalWrite(MOTOR2_PIN2 , HIGH);
 
 	signal(SIGINT, sighandler);
 
-	printf("Enter vcmd1 vcmd2:");
-	scanf("%lf %lf", &vcmd1, &vcmd2);
+	//printf("Enter vcmd1 vcmd2:");
+	//scanf("%lf %lf", &vcmd1, &vcmd2);
 	//printf("start\n");	
 
-	//pwmWrite(MOTOR1_PIN1 , 600);
-
-	//pwmWrite(MOTOR2_PIN1 , 600);
+	//pwmWrite(MOTOR2_PIN1 , 900);
+	//delay(200);
+	//pwmWrite(MOTOR1_PIN1 , 800);
+	//delay(300);
 	/*pwmWrite(MOTOR1_PIN1, 60);
 	pwmWrite(MOTOR2_PIN1, 60);
 	delay(500);*/
 
 	while(1){
+		printf("%d\n" , digitalRead(ENCODER_PIN1));
+		delay(1000);
+		//pwmWrite(MOTOR2_PIN1, PWM2);
 		//pwmWrite(MOTOR1_PIN1, PWM1);
-		//delay(100);
-		pwmWrite(MOTOR2_PIN1, PWM2);
-		delay(500);
+		//pwmWrite(MOTOR2_PIN1, PWM2);
+		delay(200);
+		//delay(20000);
 
 		//speed1 = car_speed(PWM1 , 1);
 		//PWM1 = pi_control(1 , vcmd1 , speed1);
-		//printf("%lf %lf\n", speed1 , duration);
-		speed2 = car_speed(PWM2 , 2);
-		PWM2 = pi_control(2 , vcmd2 , speed2);
-		printf("%lf %d\n" , speed2 , PWM2);
+		//printf("%lf %d\n", speed1 , PWM1);
+		//speed2 = car_speed(PWM2 , 2);
+		//PWM2 = pi_control(2 , vcmd2 , speed2);
+		//printf("%lf %d\n" , speed2 , PWM2);
 		//printf("%lf   %lf\n", speed1 , speed2);
 		//printf("current_speed2 = %lf\n", speed2);
 		//PWM1 = pi_control(1 , 2, speed1);
@@ -122,31 +129,8 @@ void encoder(int pin){
 	else 
 		encoder_current = digitalRead(ENCODER_PIN2);
 
-	printf("%d\n" , encoder_current);
+	//printf("%d\n" , encoder_current);
 
-	//printf("encoder_current = %d\n", encoder_current);
-	/*if(encoder_current != encoder_pre){
-		if(encoder_check == 0){//not start to count
-			if(diff < 0)
-				diff = 0;
-		}
-		else{ //end to count
-			if(diff < 0)
-				diff = 0;
-		}
-
-		if(diff < 0)
-			diff = 0;
-	}
-	else if(encoder_current == encoder_pre){
-		if(diff >=0 && diff < 3)
-			diff ++;
-		else{
-			check = 1;
-			gettimeofday(&start , NULL);
-			diff = -1;
-		}
-	}*/
 	/*if(encoder_current != encoder_pre){
 		if (encoder_check == 0){
 			encoder_check = 1;
@@ -187,11 +171,18 @@ void encoder(int pin){
 }
 
 double car_speed(int PWM , int pin){
-	while(1){:
-		if(PWM < 420)
-			return 0;
+	double time;
+	while(1){
 		encoder(pin);
 		usleep(sample_time);
+		/*if(encoder_check == 1){ //during counting
+			gettimeofday(&check , NULL);
+			time = (check.tv_sec - start.tv_sec) + (check.tv_usec - start.tv_usec) * 0.000001;
+			if(time > checktime){ //take too long time
+				printf("long long long\n");
+				return 0;
+			}
+		}*/
 		if(encoder_end == 1)
 			break;
 	}
